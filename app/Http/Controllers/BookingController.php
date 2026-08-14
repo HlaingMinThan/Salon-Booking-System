@@ -75,6 +75,33 @@ class BookingController extends Controller
         return redirect()->route('booking.confirmation', $booking);
     }
 
+    public function search(Request $request): Response
+    {
+        $phone = $request->query('phone');
+        $bookings = [];
+
+        if ($phone) {
+            $bookings = Booking::with('slot.service')
+                ->where('phone', $phone)
+                ->latest()
+                ->get()
+                ->map(fn (Booking $booking) => [
+                    'id' => $booking->id,
+                    'customer_name' => $booking->customer_name,
+                    'phone' => $booking->phone,
+                    'status' => $booking->status,
+                    'date' => $booking->slot->date->format('Y-m-d'),
+                    'start_time' => $booking->slot->start_time,
+                    'service_name' => $booking->slot->service->name,
+                ]);
+        }
+
+        return Inertia::render('booking/Search', [
+            'phone' => $phone ?? '',
+            'bookings' => $bookings,
+        ]);
+    }
+
     public function show(Booking $booking): Response
     {
         $booking->load('slot.service');

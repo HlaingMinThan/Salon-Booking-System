@@ -16,7 +16,7 @@ import {
     DialogDescription,
 } from '@/components/ui/dialog'
 import { home } from '@/routes'
-import { store } from '@/routes/booking'
+import { store, search } from '@/routes/booking'
 import { login } from '@/routes'
 
 interface SlotItem {
@@ -106,6 +106,12 @@ const formattedSelectedDate = computed(() => {
             <div class="mx-auto flex max-w-6xl items-center justify-between px-6 py-4">
                 <h1 class="text-xl font-bold text-primary">Salon Booking</h1>
                 <nav class="flex items-center gap-3">
+                    <Link
+                        :href="search.url()"
+                        class="rounded-md px-4 py-2 text-sm font-medium text-muted-foreground transition hover:text-foreground"
+                    >
+                        Check My Booking
+                    </Link>
                     <Link
                         v-if="$page.props.auth.user"
                         :href="'/dashboard'"
