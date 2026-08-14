@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import { Link } from '@inertiajs/vue3';
-import { BookOpen, FolderGit2, LayoutGrid } from '@lucide/vue';
+import { Link, usePage } from '@inertiajs/vue3';
+import { BookOpen, Calendar, ClipboardList, FolderGit2, LayoutGrid, Scissors } from '@lucide/vue';
 import AppLogo from '@/components/AppLogo.vue';
 import NavFooter from '@/components/NavFooter.vue';
 import NavMain from '@/components/NavMain.vue';
@@ -16,14 +16,45 @@ import {
 } from '@/components/ui/sidebar';
 import { dashboard } from '@/routes';
 import type { NavItem } from '@/types';
+import { computed } from 'vue';
 
-const mainNavItems: NavItem[] = [
-    {
-        title: 'Dashboard',
-        href: dashboard(),
-        icon: LayoutGrid,
-    },
-];
+const page = usePage();
+
+const isAdmin = computed(() => {
+    return page.props.auth?.user?.email === 'hlaingminthan@gmail.com';
+});
+
+const mainNavItems = computed<NavItem[]>(() => {
+    const items: NavItem[] = [
+        {
+            title: 'Dashboard',
+            href: dashboard(),
+            icon: LayoutGrid,
+        },
+    ];
+
+    if (isAdmin.value) {
+        items.push(
+            {
+                title: 'Services',
+                href: '/admin/services',
+                icon: Scissors,
+            },
+            {
+                title: 'Slots',
+                href: '/admin/slots',
+                icon: Calendar,
+            },
+            {
+                title: 'Bookings',
+                href: '/admin/bookings',
+                icon: ClipboardList,
+            },
+        );
+    }
+
+    return items;
+});
 
 const footerNavItems: NavItem[] = [
     {
